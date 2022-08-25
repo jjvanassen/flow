@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<title>Collective Flow Experiment</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<canvas id="c"></canvas>
+	<div class="pages">
+		<div id="page_welcome" class="textwidth hidden">
+			<h1>Welcome</h1>
+			<p>
+				[Welcome message]
+			</p>
+			<p>
+				[Information experimenter]
+			</p>
+			<p>
+				This experiment is for PCs or laptops only.
+			</p>
+			<div class="alignbtn">
+				<button id='goto_consentbtn' class="btn neutral" onclick="javascript:show('page_consent')">Continue</button>
+			</div>
+		</div>
+
+		<div id="page_consent" class="textwidth hidden">
+			<h1>Consent Form</h1>
+			<h2>Participants' rights</h2>
+			<p>
+				<ul class="items">
+					<li>Clear bullet punts with the rights</li>
+				</ul>
+					</p>
+					<h2>Reimbursement / Compensation</h2>
+					<p>
+						[More information]
+					</p>
+					<h2>Confidentiality / Anonymity</h2>
+					<p>
+						[More information]
+					</p>
+					<p>
+						Please only click on&nbsp;<b>'I Consent'</b>&nbsp;if you give your consent, after having read the above information.<br>
+					</p>
+					<div class="alignbtn">
+						<button id='goto_subjectbtn' class="btn positive" onclick="javascript:show('page_subject')">I consent</button>
+						<button id='goto_noconsentbtn' class="btn negative" onclick="javascript:show('page_noconsent')">I do not consent</button>
+					</div>
+				</div>
+
+				<div id="page_noconsent" class="textwidth hidden">
+					<p>
+						Without your consent we cannot continue with this experiment.
+						[More information]<br><br>
+						If you wish to reconsider you can go back to the consent form by pressing <b>'Reconsider'</b>.
+						Otherwise you can close this window.
+					</p>
+					<div class="alignbtn">
+						<button id='goto_consentbtn' class="btn neutral" onclick="javascript:show('page_consent')">Reconsider</button>
+					</div>
+				</div>
+
+				<div id="page_subject" class="textwidth hidden">
+					<h1>Subject information</h1>
+					<form>
+						<h2 style='width: 100%;'>Prolific ID</h2>
+						<input class="formitems" type="text" id="prolificID" name="prolificID"><br>
+						<p></p>
+						<h2 style='width: 100%;'>Age</h2>
+						<input class="formitems" type="number" id="age" name="age" max="117"><br>
+						<p></p>
+						<h2 style='width: 100%;'>Gender</h2>
+						<input class="formitems" type="radio" id="male" name="gender" value="1">
+						<label for="male">Male</label><br>
+						<input class="formitems" type="radio" id="female" name="gender" value="2">
+						<label for="female">Female</label><br>
+						<input class="formitems" type="radio" id="other" name="gender" value="3">
+						<label for="other">Other</label>
+						<p></p>
+						<h2 style='width: 100%;'>Corrected vision</h2>
+						<p style='margin: 0px;width: 100%;'>
+							Reply with yes when you are wearing glasses or contact lenses during the experiment.
+						</p>
+						<input class="formitems" type="radio" id="yes" name="corrvis" value="1">
+						<label for="yes">Yes</label><br>
+						<input class="formitems" type="radio" id="no" name="corrvis" value="0">
+						<label for="no">No</label><br>
+						<p></p>
+					</form>
+					<div class="alignbtn">
+						<button id='goto_instructionsbtn' class="btn neutral" onclick="javascript:subjectValidity();">Continue</button>
+					</div>
+				</div>
+
+				<div id="page_instructions1" class="hidden">
+					<h1>Instruction Video</h1>
+					<p class='center'>With audio</p>
+					[Video embedding here]
+					<div class="alignbtn">
+						<button id='goto_trainingbtn' class="btn neutral" onclick="javascript:main();nextTrial();">Go to training</button>
+					</div>
+				</div>
+
+				<div id="trial_page" class="hidden">
+					<div id ="training_tag1" class="training">Training</div>
+					<div id ="training_tag2" class="trialnum">Answers won't be stored during training.</div>
+					<div class="trialnum"><span id="trialProgress"></span></div>
+					<div class="instructionblock">
+						<div id="task_descripion">
+							Task:<br>
+							Rate the 5 properties for the simulation
+						</div>
+					</div>
+					<div class="mainblock">
+						<div class="stimblock">
+							<canvas id="standard" class="stimulus"></canvas>
+						</div >
+						<div class="guiblock">
+							<div id="minmax">
+								<div class="textleft">Low</div>
+								<div class="textright">High</div>
+							</div>
+							<div class="sliderblock">
+								<div id="task_gui_text1" class="fonttrial"><span id="slider1_label"></div>
+								<input type="range" min="1" max="100" value="50" class="slider" id="slider_dim1" onchange="sliders_moved(0)"/>
+								<div id="task_gui_text2" class="fonttrial"><span id="slider2_label"></div>
+								<input type="range" min="1" max="100" value="50" class="slider" id="slider_dim2" onchange="sliders_moved(1)"/>
+								<div id="task_gui_text3" class="fonttrial"><span id="slider3_label"></div>
+								<input type="range" min="1" max="100" value="50" class="slider" id="slider_dim3" onchange="sliders_moved(2)"/>
+								<div id="task_gui_text4" class="fonttrial"><span id="slider4_label"></div>
+								<input type="range" min="1" max="100" value="50" class="slider" id="slider_dim4" onchange="sliders_moved(3)"/>
+								<div id="task_gui_text5" class="fonttrial"><span id="slider5_label"></div>
+								<input style="margin: 10px 0px 10px 0px;" type="range" min="1" max="100" value="50" class="slider" id="slider_dim5" onchange="sliders_moved(4)"/>
+							</div>
+							<div id="minmax">
+								<div class="textleft">Low</div>
+								<div class="textright">High</div>
+							</div>
+							<button id='reset_sliders_btn' class="resetbtn white" onclick="javascript:reset_sim();">Reset</button>
+						</div>
+						<br style="clear: left;" />
+					</div>
+					<div class="alignbtn">
+						<div id='waitsecbox' class="counter"><span id="waitsec"></span></div>
+						<button id='goto_nexttrial' class="btn white" value = 0 onclick="javascript:nextTrial();">Continue</button>
+					</div>
+				</div>
+
+				<div id="training_done_page" class="hidden">
+					<h2 style="color: white;text-align: center;">You finished the training. When you start the experiment all answers will be recorded.</h2>
+					<div class="alignbtn">
+						<button id='goto_done' class="btn white" onclick="javascript:nextTrial();">Start Experiment</button>
+					</div>
+				</div>
+
+				<div id="page_thankyou" class="hidden">
+					<h1>Finished</h1>
+					<p style="text-align: center;">
+						Thank you very much for participating!<br><br>
+						[More information]
+						<br><br>
+						Press the following button to be redirected to Prolific for experiment completion.
+					</p>
+					<div class="alignbtn">
+						<button id='goto_prolificbtn' class="btn neutral">To Prolific</button>
+					</div>
+				</div>
+			</div>
+		</body>
+
+
+
+		<script type="module">
+		import * as THREE from '/js/three.module.js';
+		import * as SIM from '/js/simulator.js';
+		import * as FUNC from '/js/functions.js';
+		import * as SORT from '/js/sortable.esm.js';
+
+		// Variables tracked throughout the script
+		var prolID,age,gender,corrvis,trialTime,csvString,filename,stimList,numTrials;
+		var trialID = 0;
+		var trainingID = 0;
+		var trainingVals = [[3.75,7.5,87.39],[3.75,15,42.43],[11.25,3.75,87.39],[3.75,0,42.43]];
+		var numTrainingTrials = trainingVals.length;
+		var frameRate = 60;
+		var numGroup = 6;
+		var datPath = "results/"; // folder where experimental data will be saved
+		var d = new Date();
+		var simulationActive = true;
+		var answered = false;
+		var continueTime;
+		var timePassed = false;
+		var timeToPass = 5;//5
+		var sliderUsed = new Array(5).fill(0);
+		var agentDat = [];
+		var sceneProp = {
+			BgC: 0x606060,
+			AgsC: 0xFFFFFF,
+			NumAgents: 25,
+			ZoR: 1,
+			ZoO: 3.75,
+			ZoA: 7.5,
+			FoV: 272.5,
+			Turn: 42.43,
+			Err: 5.75,
+			Speed: 7,
+			FrameRate: frameRate,
+			ColMin: 0.8,
+			LengthLine: 1,//0.7,
+			SceneSize: 25
+		};
+		var stimProp = {
+			dim1:'',
+			dim2:'',
+			dim3:'',
+			dim4:'',
+			dim5:''
+		};
+		var subProp = {
+			prolID: '',
+			subID: '',
+			age: '',
+			gender: '',
+			corrvis: ''
+		};
+		var trialProp = {
+			groupID: '',
+			trialGroup: '',
+			wordGroup: '',
+			trialID:'',
+			stimID:'',
+			zor:'',
+			zoo:'',
+			zoa:'',
+			fov:'',
+			tr:'',
+			err:'',
+			trialTime:''
+		}
+
+		// Experiment functions
+		$(document).ready(start);
+
+		function start(){
+			show('page_welcome');
+		}
+
+		function getNumFile(){
+			var numFiles;
+			$.ajax({
+				type: 'POST',
+				url: "filecount.php",
+				async: false,
+				dataType : 'json',
+				success : function (result) {
+					numFiles = result;
+				}
+			});
+			return numFiles;
+		}
+
+		function show(element) {
+			// hide all elements
+			$('.show').removeClass('show').addClass('hidden');
+			// switch the css display property of the provided element
+			var ele = $(`#${element}`);
+			ele.removeClass('hidden').addClass('show');
+			resetView()
+		}
+		window.show = show;
+
+		function visibility_on(element,on) {
+			var ele = document.getElementById(element);
+			if (on){
+				ele.style.display= "inline-flex";
+			}else{
+				ele.style.display= "none";
+			}
+		}
+
+		function subjectValidity(){
+			var correct = 0;
+			// check prolificID
+			if (document.getElementById("prolificID").value.length == 0) {
+				//alert("The Prolific ID field is empty.");
+			}else{
+				prolID = document.getElementById("prolificID").value;
+				correct++;
+			}
+			// check age
+			if (document.getElementById("age").validity.rangeOverflow) {
+				//alert("The oldest person currently alive is 117.");
+			}else if (!document.getElementById("age").value){
+				//alert("The value at age is missing or not a number.");
+			} else {
+				age = document.getElementById("age").value;
+				correct++;
+			}
+			// check gender
+			var radios = document.getElementsByName('gender');
+			for (var i = 0, length = radios.length; i < length; i++) {
+				if (radios[i].checked) {
+					gender = radios[i].value;
+					correct++;
+					break;
+				}
+			}
+			// check corrected vision
+			var radios = document.getElementsByName('corrvis');
+			for (var i = 0, length = radios.length; i < length; i++) {
+				if (radios[i].checked) {
+					corrvis = radios[i].value;
+					correct++;
+					break;
+				}
+			}
+			// check if all answers are given
+			if (correct == 4){
+				show('page_instructions1');
+			}else{
+				alert("The form was incorrect or incomplete, please check your answers.");
+			}
+		}
+		window.subjectValidity = subjectValidity;
+
+		function resetView() {
+			//page automatically scrolls to top.
+			document.body.scrollTop = 0;
+			document.documentElement.scrollTop = 0;
+		}
+
+		function resetTime() {
+			trialTime = Date.now() // start a timer
+		}
+
+		function saveTrial(){
+			var rowArray;
+			trialProp.trialID = trialID;
+			trialProp.stimID = stimList.stimIDs[trialID-1];
+			trialProp.zor = sceneProp.ZoR;
+			trialProp.zoo = sceneProp.ZoO;
+			trialProp.zoa = sceneProp.ZoA;
+			trialProp.fov = sceneProp.FoV;
+			trialProp.tr = sceneProp.Turn;
+			trialProp.err = sceneProp.Err;
+			trialProp.trialTime = (Date.now() - trialTime)/1000;
+			get_sliderVal();
+				// add headers first time
+				if(trialProp.trialID==1){
+					rowArray = Object.assign(subProp,trialProp,stimProp);
+					csvString = FUNC.obj2csv(rowArray,true)// header
+				}else{
+					rowArray = Object.assign(subProp,trialProp,stimProp);
+					csvString = FUNC.obj2csv(rowArray,false)// header
+				}
+			FUNC.write2file(csvString,datPath+filename);
+			// assign for new trial after catch
+			trialProp.wordGroup = FUNC.mods(subProp.subID,2);
+		}
+
+		function setSliderLabels(nameVal){
+			if(nameVal == 1){
+				document.getElementById('slider1_label').textContent = "Grouping";
+				document.getElementById('slider2_label').textContent = "Searching";
+				document.getElementById('slider3_label').textContent = "Uniformity";
+				document.getElementById('slider4_label').textContent = "Scatteredness";
+				document.getElementById('slider5_label').textContent = "Exclusion";
+			}else if(nameVal == 2){
+				document.getElementById('slider1_label').textContent = "Focus";
+				document.getElementById('slider2_label').textContent = "Chaotic";
+				document.getElementById('slider3_label').textContent = "Synchronicity";
+				document.getElementById('slider4_label').textContent = "Compactness";
+				document.getElementById('slider5_label').textContent = "Cooperation";
+			}else if(nameVal == 3){
+				document.getElementById('slider1_label').textContent = "CHECK, Set the maximum value";
+				document.getElementById('slider2_label').textContent = "CHECK, Set the maximum value";
+				document.getElementById('slider3_label').textContent = "CHECK, Set the maximum value";
+				document.getElementById('slider4_label').textContent = "CHECK, Set the maximum value";
+				document.getElementById('slider5_label').textContent = "CHECK, Set the maximum value";
+			}
+		}
+
+		function updateTrialProgress(training){
+			if(training){
+				document.getElementById('trialProgress').textContent = "Training trial " + trainingID + " of " + numTrainingTrials;
+			}else{
+				document.getElementById('trialProgress').textContent = "Trial " + trialID + " of " + numTrials;
+			}
+		}
+
+		function nextTrial(){
+			//answered = true;// for debug
+			// first click
+			if(trainingID==0){
+				trialChange();
+				// training
+			}else if(trainingID <= numTrainingTrials){
+				if (answered){
+					answered=false;
+					trialChange();
+				}else{
+					alert("You need to rate all 5 properties");
+				}
+				// start Experiment
+			}else if(trainingID > numTrainingTrials && trialID == 0){
+				trialChange();
+				// experiment
+			}else if(trainingID > numTrainingTrials && trialID <= numTrials)
+			if (answered){
+				answered=false;
+				saveTrial();
+				trialChange();
+			}else{
+				alert("You need to rate all 5 properties");
+			}
+		}
+		window.nextTrial = nextTrial;
+
+		function make_stimList(trialGroup){
+			var zone_vals = [0.,3.75,7.5,11.25,15.];
+			var tr_vals = [10,20.6,42.43,87.39,180];
+			var stimVals = [];
+			var stimIDs = [];
+			var numDim = 3;
+			var numVar = 5;
+			var allStims = numVar ** numDim;
+			var numCatch = 3;
+
+			for(var i = trialGroup; i<allStims+1; i+=3){
+				stimIDs.push(i);
+			}
+			var numStims = stimIDs.length;
+			stimIDs = FUNC.shuffleArray(stimIDs);
+			var stimValIDs = FUNC.genValID(numVar);// lookup table
+
+			for(var i = 0; i < numStims; i ++ ){
+				stimVals.push([zone_vals[stimValIDs[stimIDs[i]-1][0]],zone_vals[stimValIDs[stimIDs[i]-1][1]],tr_vals[stimValIDs[stimIDs[i]-1][2]]]);
+			}
+
+			// add catch trials
+			var catchRatio = numStims/numCatch;
+			stimIDs.splice(Math.round(catchRatio/2), 0, 0);
+			stimVals.splice(Math.round(catchRatio/2), 0, [20,20,360]);
+			stimIDs.splice(Math.round(catchRatio/2+catchRatio), 0, 0);
+			stimVals.splice(Math.round(catchRatio/2+catchRatio), 0, [20,20,360]);
+			stimIDs.splice(Math.round((catchRatio/2)+(catchRatio*2)), 0, 0);
+			stimVals.splice(Math.round((catchRatio/2)+(catchRatio*2)), 0, [20,20,360]);
+
+			return {
+				stimVals,
+				stimIDs
+			};
+		}
+		window.make_stimList = make_stimList;
+
+		function showTrialPage(){
+			show('trial_page');
+		}
+
+		function trialChange(){
+			resetTime();
+			// beginning experiment
+			if (trainingID==0){
+				assignSubProp();
+			}
+			// training
+			if (trainingID < numTrainingTrials){
+				trainingID++
+				simulationActive = true;
+				sceneProp_default();
+				setSliderLabels(trialProp.wordGroup);
+				set_sceneProp(trainingVals[trainingID-1]);
+				rand_sliderVal();
+				visibility_on("waitsecbox",true);
+				visibility_on("goto_nexttrial",false);
+				updateTrialProgress(true);
+				reset_sim();
+				continueTime = Date.now()
+				timePassed = false;
+				showTrialPage();
+
+				// finished training
+			}else if (trainingID == numTrainingTrials){
+				trainingID++
+				simulationActive = false;
+				show('training_done_page');
+				// main experiment
+			}else if (trainingID > numTrainingTrials && trialID < numTrials){
+				trialID++
+				simulationActive = true;
+				// catch trial
+				if (stimList.stimIDs[trialID-1]==0){
+					trialProp.wordGroup = 3;
+					setSliderLabels(trialProp.wordGroup);
+				}else{
+					setSliderLabels(trialProp.wordGroup);
+				}
+				sceneProp_default();
+				set_sceneProp(stimList.stimVals[trialID-1]);
+				rand_sliderVal();
+				visibility_on("waitsecbox",true);
+				visibility_on("goto_nexttrial",false);
+				visibility_on('training_tag1',false);
+				visibility_on('training_tag2',false);
+				updateTrialProgress(false);
+				reset_sim();
+				continueTime = Date.now();
+				timePassed = false;
+				showTrialPage();
+				// experiment done
+			}else if (trialID == numTrials){
+				simulationActive = false;
+				document.body.style.backgroundColor = "#FFFFFF";
+				show('page_thankyou');
+			}
+			console.log("trainingID = " + trainingID);
+			console.log("trialID = " + trialID);
+		}
+
+		function assignSubProp(){
+			subProp.prolID = prolID;
+			subProp.age = age;
+			subProp.gender = gender;
+			subProp.corrvis = corrvis;
+			subProp.subID = 1 //getNumFile()+1;
+			trialProp.groupID = FUNC.mods(subProp.subID,6);
+			trialProp.trialGroup = FUNC.mods(subProp.subID,3);
+			trialProp.wordGroup = FUNC.mods(subProp.subID,2);
+			stimList = make_stimList(trialProp.trialGroup);
+			numTrials = stimList.stimIDs.length;
+			filename = 'S'+subProp.subID+'_'+d.getFullYear()+('00'+(d.getMonth()+1)).slice(-2)+('00'+d.getDate()).slice(-2)+'.csv';
+			FUNC.write2file("",datPath+filename);
+			console.info("subID = " + subProp.subID);
+			console.info("groupID = " + trialProp.groupID);
+			console.info("trialGroup = " + trialProp.trialGroup);
+			console.info("wordGroup = " + trialProp.wordGroup);
+			console.info("numTrials = " + numTrials);
+			console.info("file made");
+		}
+
+		function sceneProp_default(){
+			sceneProp.ZoR = 1;
+			sceneProp.ZoO = 3.75;
+			sceneProp.ZoA = 7.5;
+			sceneProp.FoV = 272.5;
+			sceneProp.Turn = 42.43;
+			sceneProp.Err = 5.75;
+		}
+
+		function set_sceneProp(stimVals){
+			sceneProp.ZoO = stimVals[0];
+			sceneProp.ZoA = stimVals[1];
+			sceneProp.Turn = stimVals[2];
+		}
+
+		function get_sliderVal(){
+			stimProp.dim1 = parseInt(document.getElementById("slider_dim1").value);
+			stimProp.dim2 = parseInt(document.getElementById("slider_dim2").value);
+			stimProp.dim3 = parseInt(document.getElementById("slider_dim3").value);
+			stimProp.dim4 = parseInt(document.getElementById("slider_dim4").value);
+			stimProp.dim5 = parseInt(document.getElementById("slider_dim5").value);
+		}
+
+		function rand_sliderVal(){
+			// get sliders
+			const sliders = document.querySelectorAll(".slider");
+			for (var i = 0; i < sliders.length; i++){
+				// set random start position
+				sliders[i].value = Math.random()*100;
+			}
+		}
+
+		function sliders_moved(sliderID){
+			sliderUsed[sliderID] = 1;
+			var totalSlider = sliderUsed.reduce((a, b) => a + b, 0);
+			if (totalSlider==5){
+				answered = true;
+				sliderUsed = Array(5).fill(0);
+			}
+		}
+		window.sliders_moved = sliders_moved;
+
+		function main() {
+			// start timer and set properties
+			resetTime();
+			simulationActive = true;
+			const clearColor = new THREE.Color('#000');
+			document.body.style.backgroundColor = "#606060";
+
+			// make simulator scene
+			function addScene(elem, fn) {
+				sceneElements.push({elem, fn});
+			}
+
+			// Canvas/renderer
+			const canvas = document.querySelector('#c');
+			var renderer = new THREE.WebGLRenderer({canvas, alpha: true});
+			const sceneElements = [];
+
+			// Simulator
+			{
+				const elem = document.querySelector('#standard');
+				// Initialization (run once)
+				let [scene, camera, agentDat] = SIM.simInit(sceneProp);
+				// This is the update code
+				addScene(elem, (time, rect) => {
+					// trial timer
+					if(!timePassed){
+						document.getElementById("waitsec").innerHTML = "You can continue in "+Math.ceil(timeToPass-((Date.now() - continueTime)/1000))+" seconds";
+						if ((Date.now() - continueTime)/1000 >= timeToPass){
+							timePassed = true;
+						}
+					}else{
+						visibility_on("waitsecbox",false);
+						visibility_on("goto_nexttrial",true);
+					}
+					// run simulation if active
+					if(simulationActive){
+						//update_sceneProp_old();
+						agentDat = SIM.simUpdate(agentDat,sceneProp);
+						// update lines
+						agentDat = SIM.lineUpdate(scene,agentDat,sceneProp);
+						// run renderer
+						renderer.render(scene, camera);
+					}
+				});
+
+				function reset_sim(){
+					agentDat = SIM.resetAgents(agentDat,sceneProp);
+				}
+				window.reset_sim = reset_sim;
+				main.reset_sim = reset_sim;
+
+			}
+
+			function resizeRendererToDisplaySize(renderer) {
+				const canvas = renderer.domElement;
+				const width = canvas.clientWidth;
+				const height = canvas.clientHeight;
+				const needResize = canvas.width !== width || canvas.height !== height;
+				if (needResize) {
+					renderer.setSize(width, height, false);
+				}
+				return needResize;
+			}
+
+			function render(time) {
+				time *= 0.001;
+				resizeRendererToDisplaySize(renderer);
+
+				renderer.setScissorTest(false);
+				renderer.setClearColor(clearColor, 0);
+				renderer.clear(true, true);
+				renderer.setScissorTest(true);
+
+				const transform = `translateY(${window.scrollY}px)`;
+				renderer.domElement.style.transform = transform;
+
+				for (const {elem, fn} of sceneElements) {
+					// get the viewport relative position of this element
+					const rect = elem.getBoundingClientRect();
+					const {left, right, top, bottom, width, height} = rect;
+
+					const isOffscreen =
+					bottom < 0 ||
+					top > renderer.domElement.clientHeight ||
+					right < 0 ||
+					left > renderer.domElement.clientWidth;
+
+					if (!isOffscreen) {
+						const positiveYUpBottom = renderer.domElement.clientHeight - bottom;
+						renderer.setScissor(left, positiveYUpBottom, width, height);
+						renderer.setViewport(left, positiveYUpBottom, width, height);
+
+						fn(time, rect);
+					}
+				}
+
+				requestAnimationFrame(render);
+			}
+			requestAnimationFrame(render);
+		}
+		window.main = main;
+
+
+
+
+		</script>
+		</html>

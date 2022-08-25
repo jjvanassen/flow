@@ -1,0 +1,428 @@
+html,
+
+#c {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: -1;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  display: -webkit-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  -webkit-box-align: center;
+  align-items: center;
+  align-content: center;
+}
+
+h1 {
+  color: #808080;
+  font-size: 2rem;
+  text-transform: uppercase;
+  width: 100%;
+  text-align: center;
+  display:block;
+}
+
+h2 {
+  color: #515151;
+  font-size: 1.2rem;
+  width: 80%;
+  left: 0;
+  right: 0;
+  margin: 10px 0px 0px 0px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  display:flex;
+}
+
+p {
+  color: #808080;
+  font-size: 1.2rem;
+  width: 80%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+
+form{
+  font-size:1.2rem;
+  color: #808080;
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+iframe {
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display:block;
+}
+
+
+.pages{
+  width: 100vh;
+  margin:auto;
+  /*border: 1px solid green;*/
+}
+
+.items {
+  color: #808080;
+  font-size: 1.2rem;
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  display:block;
+}
+
+.formitems {
+  font-size: 1.2rem;
+}
+
+.textwidth{
+  width: 20%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.instructionblock {
+  flex-grow: 1;
+  color: #cccccc;
+  font-size: 1.4rem;
+  display: inline-flex;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  /*border: 1px solid indigo;*/
+  margin: 20px auto;
+}
+
+.mainblock {
+  display: flex;
+  justify-content: center;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  /*border: 1px solid red;*/
+}
+
+.stimblock {
+  display: inline-flex;
+  float: left;
+  width: 50vh;
+  height: 50vh;
+  /*border: 1px solid purple;*/
+  /*margin: 20px 0px 0px 0px;*/
+}
+
+.stimulus {
+  display: flex;
+  width: 50vh;
+  height: 50vh;
+  margin: 0 auto;
+}
+
+.guiblock {
+  float: left;
+  margin-left: auto;
+  margin-right: auto;
+  width:400px;
+  /*border: 1px solid  coral;*/
+  margin: 0px 0px 0px 20px;
+}
+
+.textblock {
+  color: #cccccc;
+  font-size: 1.2rem;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  margin: 5px auto;
+  /*border: 1px solid green;*/
+}
+
+.sliderblock {
+  width:100%;
+  text-align: center;
+  /*border: 1px solid black;*/
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  background-color: transparent;
+  border: 2px solid #ffffff;
+  border-radius: 0.6em;
+  display: inline-flex;
+  cursor: ew-resize;
+  margin: auto;
+  width: 96.5%;
+  height: 2rem;
+  margin: 10px 0px 0px 0px;
+  vertical-align:middle;
+  align-items: center;
+  align-content: center;
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 10px; /* Set a specific slider handle width */
+  height: 2rem; /* Slider handle height */
+  background: #3aea00; /* Green background */
+  border-radius: 0.6em;
+  cursor: ew-resize; /* Cursor on hover */
+}
+
+.sortblockleft{
+  background-color: transparent;
+  border: 2px solid #A0A0A0;
+  float: left;
+  text-align: center;
+  width: 48%;
+  height: 25.5rem;
+  margin: auto;
+}
+
+.sortblockright{
+  background-color: transparent;
+  border: 2px solid #A0A0A0;
+  padding: 0px 0px 0px 2px;
+  float: right;
+  height: 25.5rem;
+  width: 48%;
+  margin: auto;
+}
+
+.sortitem {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  box-sizing: border-box;
+  background-color: transparent;
+  border: 2px solid #ffffff;
+  border-radius: 0.6em;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  width: 95%;
+  height: 1.5rem;
+  font-size: 1rem;
+  text-align: center;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  align-content: center;
+  margin: 3px auto;
+}
+
+.textitem {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  box-sizing: border-box;
+  background-color: transparent;
+  border: 2px solid #ffffff;
+  border-radius: 0.6em;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  margin: 10px 0px 0px 0px;
+  width: 200px;
+  height: 50px;
+  font-size: 1rem;
+  padding: 1em;
+  justify-content: center;
+  vertical-align:middle;
+  text-decoration: none;
+  align-self: left;
+  text-align: left;
+  align-items: center;
+  align-content: center;
+}
+
+.resetbtn {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  box-sizing: border-box;
+  background-color: transparent;
+  border: 2px solid #ffffff;
+  border-radius: 0.6em;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  margin: 10px auto;
+  width: 100px;
+  height: 30px;
+  font-size: 1rem;
+  justify-content: center;
+  vertical-align:middle;
+  text-decoration: none;
+  align-items: center;
+  text-align: center;
+}
+
+.fonttrial {
+  flex-grow: 1;
+  text-align: center;
+  color: #cccccc;
+}
+
+.trialnum{
+  margin: 0px 0px 10px 0px;
+  display: block;
+  flex-grow: 1;
+  text-align: center;
+  color: #aaaaaa;
+}
+
+.training{
+  font-size: 2rem;
+  text-transform: uppercase;
+  margin: 0px 0px 10px 0px;
+  display: block;
+  flex-grow: 1;
+  text-align: center;
+  color: #aaaaaa;
+}
+
+.radiobutton{
+  vertical-align:middle;
+}
+
+.radiolabel{
+  color: #cccccc;
+  margin: 0px 10px 0px 0px;
+}
+
+.left{
+  float: left;
+  text-align:left;
+  /*border: 1px solid green*/;
+}
+
+.right{
+  float: right;
+  text-align:right;
+  /*border: 1px solid red*/;
+}
+
+.center{
+  float: center;
+  text-align:center;
+  /*border: 1px solid red*/;
+}
+
+.standard{
+  margin: auto;
+  float: center;
+  text-align:center;
+  /*border: 1px solid blue*/;
+}
+
+.alignbtn{
+  display:inline;
+  margin: 0;
+  display: -webkit-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  -webkit-box-align: center;
+  align-items: center;
+  align-content: center;
+}
+
+.btn {
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: 2px solid #3498db;
+  border-radius: 0.6em;
+  color: #3498db;
+  cursor: pointer;
+  display: -webkit-box;
+  display: flex;
+  align-self: center;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+  margin: 20px;
+  padding: 1.2em 2.8em;
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+}
+.btn:hover, .btn:focus {
+  color: #fff;
+  outline: 0;
+}
+
+.neutral {
+  -webkit-transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+}
+.neutral:hover {
+  box-shadow: 0 0 40px 40px #3498db inset;
+}
+
+.negative {
+  color: #e74c3c;
+  border-color: #e74c3c;
+  -webkit-transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+}
+.negative:hover {
+  box-shadow: 0 0 40px 40px #e74c3c inset;
+}
+
+.positive {
+  color: #2ecc71;
+  border-color: #2ecc71;
+  -webkit-transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+}
+.positive:hover {
+  box-shadow: 0 0 40px 40px #2ecc71 inset;
+}
+
+.white {
+  color: #ffffff;
+  border-color: #ffffff;
+  -webkit-transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+}
+.white:hover {
+  box-shadow: 0 0 40px 40px #ffffff inset;
+  color: #808080;
+}
+
+.hidden {
+  display: none
+}
+
+.show {
+  display: inline
+}

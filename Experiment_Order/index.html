@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<title>Collective Flow Experiment</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<canvas id="c"></canvas>
+	<div class="pages">
+		<div id="page_welcome" class="textwidth hidden">
+			<h1>Welcome</h1>
+			<p>
+				[Welcome message]
+			</p>
+			<p>
+				[Information experimenter]
+			</p>
+			<p>
+				This experiment is for PCs or laptops only.
+			</p>
+			<div class="alignbtn">
+				<button id='goto_consentbtn' class="btn neutral" onclick="javascript:show('page_consent')">Continue</button>
+			</div>
+		</div>
+
+		<div id="page_consent" class="textwidth hidden">
+			<h1>Consent Form</h1>
+			<h2>Participants' rights</h2>
+			<p>
+				<ul class="items">
+					<li>Clear bullet punts with the rights</li>
+				</ul>
+					</p>
+					<h2>Reimbursement / Compensation</h2>
+					<p>
+						[More information]
+					</p>
+					<h2>Confidentiality / Anonymity</h2>
+					<p>
+						[More information]
+					</p>
+					<p>
+						Please only click on&nbsp;<b>'I Consent'</b>&nbsp;if you give your consent, after having read the above information.<br>
+					</p>
+					<div class="alignbtn">
+						<button id='goto_subjectbtn' class="btn positive" onclick="javascript:show('page_subject')">I consent</button>
+						<button id='goto_noconsentbtn' class="btn negative" onclick="javascript:show('page_noconsent')">I do not consent</button>
+					</div>
+				</div>
+
+				<div id="page_noconsent" class="textwidth hidden">
+					<p>
+						Without your consent we cannot continue with this experiment.
+						[More information]<br><br>
+						If you wish to reconsider you can go back to the consent form by pressing <b>'Reconsider'</b>.
+						Otherwise you can close this window.
+					</p>
+					<div class="alignbtn">
+						<button id='goto_consentbtn' class="btn neutral" onclick="javascript:show('page_consent')">Reconsider</button>
+					</div>
+				</div>
+
+				<div id="page_subject" class="textwidth hidden">
+					<h1>Subject information</h1>
+					<form>
+						<h2 style='width: 100%;'>Prolific ID</h2>
+						<input class="formitems" type="text" id="prolificID" name="prolificID"><br>
+						<p></p>
+						<h2 style='width: 100%;'>Age</h2>
+						<input class="formitems" type="number" id="age" name="age" max="117"><br>
+						<p></p>
+						<h2 style='width: 100%;'>Gender</h2>
+						<input class="formitems" type="radio" id="male" name="gender" value="1">
+						<label for="male">Male</label><br>
+						<input class="formitems" type="radio" id="female" name="gender" value="2">
+						<label for="female">Female</label><br>
+						<input class="formitems" type="radio" id="other" name="gender" value="3">
+						<label for="other">Other</label>
+						<p></p>
+						<h2 style='width: 100%;'>Corrected vision</h2>
+						<p style='margin: 0px;width: 100%;'>
+							Reply with yes when you are wearing glasses or contact lenses during the experiment.
+						</p>
+						<input class="formitems" type="radio" id="yes" name="corrvis" value="1">
+						<label for="yes">Yes</label><br>
+						<input class="formitems" type="radio" id="no" name="corrvis" value="0">
+						<label for="no">No</label><br>
+						<p></p>
+					</form>
+					<div class="alignbtn">
+						<button id='goto_instructionsbtn' class="btn neutral" onclick="javascript:subjectValidity();">Continue</button>
+					</div>
+				</div>
+
+				<div id="page_instructions1" class="hidden">
+					<h1>Instruction Video</h1>
+					<p class='center'>With audio</p>
+					[Video embedding here]
+					<div class="alignbtn">
+						<button id='goto_trainingbtn' class="btn neutral" onclick="javascript:main();nextTrial();">Go to training</button>
+					</div>
+				</div>
+
+				<div id="trial_page" class="hidden">
+					<div id ="training_tag1" class="training">Training</div>
+					<div id ="training_tag2" class="trialnum">Answers won't be stored during training.</div>
+					<div class="trialnum"><span id="trialProgress"></span></div>
+					<div class="instructionblock">
+						<div id="task_descripion">
+							Task:<br>
+							Select and prioritize 3 names that best describe the behaviour of the slider.
+						</div>
+					</div>
+					<div class="mainblock">
+						<div class="stimblock">
+							<canvas id="standard" class="stimulus"></canvas>
+						</div >
+						<div class="guiblock">
+							<div class="sliderblock">
+								<input type="range" min="1" max="100" value="50" class="slider" id="general_slider" onchange="get_slider()"/>
+							</div>
+							<div class="textblock static">
+								<div id="task_gui_text" class="fonttrial static">Drag and order 3 names on the left</div>
+							</div>
+							<div id="sorting_top3" class="sortblockleft connectedSortable">
+							</div>
+							<div id="sorting_words" class="sortblockright connectedSortable">
+								<div data-id="1">
+									<div id="sort_1" class="sortitem white"><span id="name_sort_1" class="nameitem"></span></div>
+								</div>
+								<div data-id="2">
+									<div id="sort_2" class="sortitem white"><span id="name_sort_2" class="nameitem"></span></div>
+								</div>
+								<div data-id="3">
+									<div id="sort_3" class="sortitem white"><span id="name_sort_3" class="nameitem"></span></div>
+								</div>
+								<div data-id="4">
+									<div id="sort_4" class="sortitem white"><span id="name_sort_4" class="nameitem"></span></div>
+								</div>
+								<div data-id="5">
+									<div id="sort_5" class="sortitem white"><span id="name_sort_5" class="nameitem"></span></div>
+								</div>
+								<div data-id="6">
+									<div id="sort_6" class="sortitem white"><span id="name_sort_6" class="nameitem"></span></div>
+								</div>
+								<div data-id="7">
+									<div id="sort_7" class="sortitem white"><span id="name_sort_7" class="nameitem"></span></div>
+								</div>
+								<div data-id="8">
+									<div id="sort_8" class="sortitem white"><span id="name_sort_8" class="nameitem"></span></div>
+								</div>
+								<div data-id="9">
+									<div id="sort_9" class="sortitem white"><span id="name_sort_9" class="nameitem"></span></div>
+								</div>
+								<div data-id="10">
+									<div id="sort_10" class="sortitem white"><span id="name_sort_10" class="nameitem"></span></div>
+								</div>
+								<div data-id="11">
+									<div id="sort_11" class="sortitem white"><span id="name_sort_11" class="nameitem"></span></div>
+								</div>
+								<div data-id="12">
+									<div id="sort_12" class="sortitem white"><span id="name_sort_12" class="nameitem"></span></div>
+								</div>
+								<div data-id="13">
+									<div id="sort_13" class="sortitem white"><span id="name_sort_13" class="nameitem"></span></div>
+								</div>
+								<div data-id="14">
+									<div id="sort_14" class="sortitem white"><span id="name_sort_14" class="nameitem"></span></div>
+								</div>
+								<div data-id="15">
+									<div id="sort_15" class="sortitem white"><span id="name_sort_15" class="nameitem"></span></div>
+								</div>
+							</div>
+							<button id='reset_sliders_btn' class="resetbtn" onclick="javascript:reset_sim();">Reset</button>
+						</div>
+						<br style="clear: left;" />
+					</div>
+					<div class="alignbtn">
+						<button id='goto_nexttrial' class="btn white" value = 0 onclick="javascript:nextTrial();">Continue</button>
+					</div>
+				</div>
+
+				<div id="training_done_page" class="hidden">
+					<h2 style="color: white;text-align: center;">You finished the training. When you start the experiment all answers will be recorded.</h2>
+					<div class="alignbtn">
+						<button id='goto_done' class="btn white" onclick="javascript:nextTrial();">Start Experiment</button>
+					</div>
+				</div>
+
+				<div id="page_thankyou" class="hidden">
+					<h1>Finished</h1>
+					<p style="text-align: center;">
+						Thank you very much for participating!<br><br>
+						[More information]
+						<br><br>
+						Press the following button to be redirected to Prolific for experiment completion.
+					</p>
+					<div class="alignbtn">
+						<button id='goto_prolificbtn' class="btn neutral">To Prolific</button>
+					</div>
+				</div>
+			</div>
+		</body>
+
+
+
+		<script type="module">
+		// Javascript code
+		import * as THREE from '/js/three.module.js';
+		import * as SIM from '/js/simulator.js';
+		import * as FUNC from '/js/functions.js';
+		import * as SORT from '/js/sortable.esm.js';
+		import { GUI } from '/js/dat.gui.module.js';
+
+		// Variables tracked throughout the script
+		var prolID,age,gender,corrvis,trialTime,propID,csvString,filename;
+		var wordArray;
+		var trialID = 0;
+		var dimID =1;
+		var trainingID = 0;
+		var trialIDs = trialOrder(6);
+		var trainingIDs = [2,6];
+		var numTrials = trialIDs.length;
+		var numTrainingTrials = trainingIDs.length;
+		var frameRate = 60;
+		var datPath = "results/"; // folder where experimental data will be saved
+		var d = new Date();
+		var simulationActive = true;
+		var nameCheck = false;
+		var answered = false;
+		var agentDat = [];
+		var sceneProp = {
+			BgC: 0x606060,
+			AgsC: 0xFFFFFF,
+			NumAgents: 50,
+			ZoR: 0.75,
+			ZoO: 8,
+			ZoA: 15,
+			FoV: 280,
+			Turn: 55/frameRate,
+			Error: 4./frameRate,
+			Speed: 6/frameRate,
+			ColMin: 0.7,
+			LengthLine: 0.7,
+			SceneSize: 25
+		};
+
+		var stimProp = {
+			dimID: '',
+			name1:'',
+			name2:'',
+			name3:''
+		};
+
+		var subProp = {
+			prolID: '',
+			subID: '',
+			age: '',
+			gender: '',
+			corrvis: ''
+		};
+
+		var trialProp = {
+			trialID:'',
+			stimID:'',
+			trialTime:''
+		}
+
+		// Experiment functions
+		$(document).ready(start);
+
+		function start(){
+			show('page_welcome');
+			//show('page_instructions1');
+		}
+
+		function getNumFile(){
+			var numFiles;
+			$.ajax({
+				type: 'POST',
+				url: "filecount.php",
+				async: false,
+				dataType : 'json',
+				success : function (result) {
+					numFiles = result;
+				}
+			});
+			return numFiles;
+		}
+
+
+		function show(element) {
+			// hide all elements
+			$('.show').removeClass('show').addClass('hidden');
+			// switch the css display property of the provided element
+			var ele = $(`#${element}`);
+			ele.removeClass('hidden').addClass('show');
+			resetView()
+		}
+		window.show = show;
+
+		function visibility_on(element,on) {
+			var ele = document.getElementById(element);
+			if (on){
+				ele.style.display= "inline-flex";
+			}else{
+				ele.style.display= "none";
+			}
+		}
+
+		function subjectValidity(){
+			var correct = 0;
+			// check prolificID
+			if (document.getElementById("prolificID").value.length == 0) {
+				//alert("The Prolific ID field is empty.");
+			}else{
+				prolID = document.getElementById("prolificID").value;
+				correct++;
+			}
+			// check age
+			if (document.getElementById("age").validity.rangeOverflow) {
+				//alert("The oldest person currently alive is 117.");
+			}else if (!document.getElementById("age").value){
+				//alert("The value at age is missing or not a number.");
+			} else {
+				age = document.getElementById("age").value;
+				correct++;
+			}
+			// check gender
+			var radios = document.getElementsByName('gender');
+			for (var i = 0, length = radios.length; i < length; i++) {
+				if (radios[i].checked) {
+					gender = radios[i].value;
+					correct++;
+					break;
+				}
+			}
+			// check corrected vision
+			var radios = document.getElementsByName('corrvis');
+			for (var i = 0, length = radios.length; i < length; i++) {
+				if (radios[i].checked) {
+					corrvis = radios[i].value;
+					correct++;
+					break;
+				}
+			}
+			// check if all answers are given
+			if (correct == 4){
+				show('page_instructions1');
+			}else{
+				alert("The form was incorrect or incomplete, please check your answers.");
+			}
+		}
+		window.subjectValidity = subjectValidity;
+
+
+		function resetView() {
+			//page automatically scrolls to top.
+			document.body.scrollTop = 0;
+			document.documentElement.scrollTop = 0;
+		}
+
+		function resetTime() {
+			trialTime = Date.now() // start a timer
+		}
+
+		function saveTrial(){
+			var rowArray;
+			trialProp.trialID = trialID;
+			trialProp.stimID = trialIDs[trialID-1];
+			trialProp.trialTime = (Date.now() - trialTime)/1000;
+			sortable_read();
+				if(trialProp.trialID==1){
+					subProp.prolID = prolID;
+					subProp.subID = 1; //getNumFile()+1;
+					subProp.age = age;
+					subProp.gender = gender;
+					subProp.corrvis = corrvis;
+					filename = 'S'+subProp.subID+'_'+d.getFullYear()+('00'+(d.getMonth()+1)).slice(-2)+('00'+d.getDate()).slice(-2)+'.csv';
+					rowArray = Object.assign(subProp,trialProp,stimProp);
+					csvString = FUNC.obj2csv(rowArray,true) // header
+				}else{
+					rowArray = Object.assign(subProp,trialProp,stimProp);
+					csvString = FUNC.obj2csv(rowArray,false) // header
+				}
+			FUNC.write2file(csvString,datPath+filename);
+		}
+
+		function updateTrialProgress(training){
+			if(training){
+				document.getElementById('trialProgress').textContent = "Training trial " + trainingID + " of " + numTrainingTrials;
+			}else{
+				document.getElementById('trialProgress').textContent = "Trial " + trialID + " of " + numTrials;
+			}
+		}
+
+		// Sort interface
+		var el_top3 = document.getElementById('sorting_top3');
+		var sort_top3 = new SORT.Sortable(el_top3,{
+			emptyInsertThreshold:"100",
+			group: {
+				name: 'shared',
+				put: function (to, from) {
+					return to.el.children.length < 3 || 'clone';
+				}
+			},
+			category: "left_column",
+			handle: '.sortitem',
+			direction: 'vertical',
+			animation: 150,
+			onAdd: function(el_top3) {
+				if (sort_top3.toArray().length > 2){
+					answered=true;
+				}
+			},
+			onRemove: function(el_top3) {
+				if (sort_top3.toArray().length < 3){
+					answered=false;
+				}
+			}
+		});
+
+		var el_words = document.getElementById('sorting_words');
+		var sort_words = new SORT.Sortable(el_words,{
+			group: {
+				name: 'shared'
+			},
+			category: "right_column",
+			handle: '.sortitem',
+			direction: 'vertical',
+			animation: 150
+		});
+
+		function sortable_reset(numVis){
+			while (el_top3.childNodes.length > 0) {
+    		el_words.appendChild(el_top3.childNodes[0]);
+			}
+			// order 1-15
+			var order = sort_words.toArray();
+			order = order.sort((a, b) => a - b);
+			sort_words.sort(order);
+			//shuffle relevant part
+			var shufflepart = FUNC.shuffleArray(order.slice(0,numVis));
+			var nonshufflepart = order.slice(numVis,15);
+			sort_words.sort(shufflepart.concat(nonshufflepart));
+		}
+
+		function sortable_read(){
+			var order = sort_top3.toArray();
+			stimProp.dimID = dimID;
+			stimProp.name1ID = parseInt(order[0]);
+			stimProp.name1 = wordArray[parseInt(order[0])-1];
+			stimProp.name2ID = parseInt(order[1]);
+			stimProp.name2 = wordArray[parseInt(order[1])-1];
+			stimProp.name3ID = parseInt(order[2]);
+			stimProp.name3 = wordArray[parseInt(order[2])-1];
+			console.info(stimProp);
+		}
+
+		function sorts_visible(numVis){
+			const sortitems = document.querySelectorAll(".sortitem");
+			// loop all on
+			for (var i = 0; i < sortitems.length;i++){
+				sortitems[i].style.display = "flex";
+			}
+			// loop off
+			for (var i = sortitems.length-1; i+1 > numVis; i--){
+				sortitems[i].style.display = "none";
+			}
+		}
+
+		function dim_wordarray(dimID){
+			if (dimID==1){
+				wordArray = ['Spread', 'Randomness', 'Wall attraction', 'Individual separation', 'Tightness', 'Resistance', 'Spaciousness', 'Range of motion', 'Bouncing fast', 'Individuality', 'Flocking', 'Looseness', 'Scatterdness'];//13
+			} else if (dimID==2){
+				wordArray = ['Directionality', 'Spin', 'Delayed formation', 'Directional uniformity', 'Mimicking movement', 'Straightness', 'Size', 'Tidiness', 'Turning circle', 'Hitting', 'Cooperation', 'Flocking', 'Looseness'];//13
+			} else if (dimID==3){
+				wordArray = ['Timing', 'Directionality', 'Swarming', 'Leading', 'Spread', 'Size', 'Closeness', 'Willingness to follow', 'Hitting', 'Flocking', 'Scatterdness', 'Vertical range', 'Grouping', 'Speed'];//14
+			} else if (dimID==4){
+				wordArray = ['Discipline', 'Spread', 'Clockwise direction', 'Synchronicity', 'Group cohesion', 'Directionality', 'Swirling', 'Uniting', 'Randomness', 'Gradual flow', 'Following', 'Scatterdness', 'Closeness', 'Spiralling', 'Cohesion'];//15
+			} else if (dimID==5){
+				wordArray = ['Tightness', 'Space', 'Synchronised clustering', 'Scatterdness', 'Working as one', 'Cohesiveness', 'Compactness', 'Speed', 'Closeness', 'Flowing', 'Clustering', 'Grouping', 'Looseness', 'Flocking', 'Containedness'];//15
+			} else if (dimID==6){
+				wordArray = ['Randomness', 'Collectiveness', 'Scatterdness', 'Swirling', 'Direction of flow', 'Impact', 'Dense', 'Velocity', 'Bouncing', 'Chaos', 'Dispersal',' Clustering', 'Agitation', 'Spin'];//14
+			} else if (dimID==7){
+				wordArray = ['name 1','name 2','name 3','name 4','name 5','name 6','name 7','name 8','name 9','name 10'];
+			}
+		}
+
+		function nextTrial(){
+			// first click
+			if(trainingID==0){
+				trialChange();
+				// training
+			}else if(trainingID <= numTrainingTrials){
+				if (answered){
+					answered=false;
+					trialChange();
+				}else{
+					alert("You need to choose 3 names");
+				}
+				// start Experiment
+			}else if(trainingID > numTrainingTrials && trialID == 0){
+				trialChange();
+				// experiment
+			}else if(trainingID > numTrainingTrials && trialID <= numTrials)
+			if (answered){
+				answered=false;
+				saveTrial();
+				trialChange();
+			}else{
+				alert("You need to choose 3 names");
+			}
+		}
+		window.nextTrial = nextTrial;
+
+		function trialOrder(numTrials){
+			var temp = Array.from({length: numTrials}, (_, i) => i + 1)
+			temp = FUNC.shuffleArray(temp);
+			return temp;
+		}
+
+		function showTrialPage(){
+			show('trial_page');
+		}
+
+
+		function trialChange(){
+			resetTime();
+			// training
+			if (trainingID < numTrainingTrials){
+				trainingID++
+				dimID = trainingIDs[trainingID-1];
+				simulationActive = true;
+				showTrialPage();
+				reset_sim();
+				sceneProp_default();
+				set_sliderVal(dimID);
+				dim_wordarray(dimID);
+				sortable_reset(wordArray.length);
+				update_propNames(wordArray);
+				sorts_visible(wordArray.length);
+				updateTrialProgress(true);
+				// finished training
+			}else if (trainingID == numTrainingTrials){
+				trainingID++
+				simulationActive = false;
+				show('training_done_page');
+				// main experiment
+			}else if (trainingID > numTrainingTrials && trialID < numTrials){
+				trialID++
+				dimID = trialIDs[trialID-1];
+				simulationActive = true;
+				showTrialPage();
+				visibility_on('training_tag1',false);
+				visibility_on('training_tag2',false);
+				reset_sim();
+				sceneProp_default();
+				set_sliderVal(dimID);
+				dim_wordarray(dimID);
+				sortable_reset(wordArray.length);
+				update_propNames(wordArray);
+				sorts_visible(wordArray.length);
+				updateTrialProgress(false);
+				// experiment done
+			}else if (trialID == numTrials){
+				simulationActive = false;
+				document.body.style.backgroundColor = "#FFFFFF";
+				show('page_thankyou');
+			}
+			console.log("trainingID = " + trainingID +" ("+dimID+")");
+			console.log("trialID = " + trialID +" ("+dimID+")");
+		}
+
+		function sceneProp_default(){
+			sceneProp.ZoR = 0.75;
+			sceneProp.ZoO = 3;
+			sceneProp.ZoA = 10;
+			sceneProp.FoV = 280;
+			sceneProp.Turn = 55/frameRate;
+			sceneProp.Error = 4/frameRate;
+		}
+		window.sceneProp_default = sceneProp_default;
+
+		function get_slider()
+		{
+			get_sliderVal(dimID);
+		}
+		window.get_slider = get_slider;
+
+		function get_sliderVal(dimID){
+			if (dimID==1){
+				sceneProp.ZoR = parseInt(document.getElementById("general_slider").value)/100*15;
+				console.info('ZoR = '+sceneProp.ZoR)
+			} else if (dimID==2){
+				sceneProp.ZoO = parseInt(document.getElementById("general_slider").value)/100*15;
+				console.info('ZoO = '+sceneProp.ZoO)
+			} else if (dimID==3){
+				sceneProp.ZoA = parseInt(document.getElementById("general_slider").value)/100*15;
+				console.info('ZoA = '+sceneProp.ZoA)
+			} else if (dimID==4){
+				sceneProp.FoV = parseInt(document.getElementById("general_slider").value)/100*360;
+				console.info('FoV = '+sceneProp.FoV)
+			} else if (dimID==5){
+				sceneProp.Turn = (parseInt(document.getElementById("general_slider").value)/100*360)/frameRate;
+				console.info('Turn = '+sceneProp.Turn)
+			} else if (dimID==6){
+				sceneProp.Error = (parseInt(document.getElementById("general_slider").value)/100*15)/frameRate;
+				console.info('Error = '+sceneProp.Error)
+			}
+		}
+
+		function set_sliderVal(dimID){
+			if (dimID==1){
+				document.getElementById("general_slider").value = 100/(15/sceneProp.ZoR);
+			} else if (dimID==2){
+				document.getElementById("general_slider").value = 100/(15/sceneProp.ZoO);
+			} else if (dimID==3){
+				document.getElementById("general_slider").value = 100/(15/sceneProp.ZoA);
+			} else if (dimID==4){
+				document.getElementById("general_slider").value = 100/(360/sceneProp.FoV);
+			} else if (dimID==5){
+				document.getElementById("general_slider").value = 100/(360/(sceneProp.Turn*frameRate));
+			} else if (dimID==6){
+				document.getElementById("general_slider").value = 100/(15/(sceneProp.Error*frameRate));
+			}
+		}
+
+		function update_propNames(wordArray){
+			document.getElementById("name_sort_1").innerHTML = wordArray[0];
+			document.getElementById("name_sort_2").innerHTML = wordArray[1];
+			document.getElementById("name_sort_3").innerHTML = wordArray[2];
+			document.getElementById("name_sort_4").innerHTML = wordArray[3];
+			document.getElementById("name_sort_5").innerHTML = wordArray[4];
+			document.getElementById("name_sort_6").innerHTML = wordArray[5];
+			document.getElementById("name_sort_7").innerHTML = wordArray[6];
+			document.getElementById("name_sort_8").innerHTML = wordArray[7];
+			document.getElementById("name_sort_9").innerHTML = wordArray[8];
+			document.getElementById("name_sort_10").innerHTML = wordArray[9];
+			document.getElementById("name_sort_11").innerHTML = wordArray[10];
+			document.getElementById("name_sort_12").innerHTML = wordArray[11];
+			document.getElementById("name_sort_13").innerHTML = wordArray[12];
+			document.getElementById("name_sort_14").innerHTML = wordArray[13];
+			document.getElementById("name_sort_15").innerHTML = wordArray[14];
+		}
+
+		function main() {
+			// start timer and set properties
+			resetTime();
+			simulationActive = true;
+			const clearColor = new THREE.Color('#000');
+			document.body.style.backgroundColor = "#606060";
+
+			// make simulator scene
+			function addScene(elem, fn) {
+				sceneElements.push({elem, fn});
+			}
+
+			// Canvas/renderer
+			const canvas = document.querySelector('#c');
+			var renderer = new THREE.WebGLRenderer({canvas, alpha: true});
+			const sceneElements = [];
+
+			// Simulator
+			{
+				const elem = document.querySelector('#standard');
+				// Initialization (run once)
+				let [scene, camera, agentDat] = SIM.simInit(sceneProp);
+				// This is the update code
+				addScene(elem, (time, rect) => {
+					// run simulation if active
+					if(simulationActive){
+						//update_sceneProp_old();
+						agentDat = SIM.simUpdate(agentDat,sceneProp);
+						// update lines
+						agentDat = SIM.lineUpdate(scene,agentDat,sceneProp);
+						// run renderer
+						renderer.render(scene, camera);
+					}
+				});
+
+				function reset_sim(){
+					sceneProp_default();
+					set_sliderVal(dimID);
+					agentDat = SIM.resetAgents(agentDat,sceneProp);
+				}
+				window.reset_sim = reset_sim;
+				main.reset_sim = reset_sim;
+
+			}
+
+			function resizeRendererToDisplaySize(renderer) {
+				const canvas = renderer.domElement;
+				const width = canvas.clientWidth;
+				const height = canvas.clientHeight;
+				const needResize = canvas.width !== width || canvas.height !== height;
+				if (needResize) {
+					renderer.setSize(width, height, false);
+				}
+				return needResize;
+			}
+
+			function render(time) {
+				time *= 0.001;
+				resizeRendererToDisplaySize(renderer);
+
+				renderer.setScissorTest(false);
+				renderer.setClearColor(clearColor, 0);
+				renderer.clear(true, true);
+				renderer.setScissorTest(true);
+
+				const transform = `translateY(${window.scrollY}px)`;
+				renderer.domElement.style.transform = transform;
+
+				for (const {elem, fn} of sceneElements) {
+					// get the viewport relative position of this element
+					const rect = elem.getBoundingClientRect();
+					const {left, right, top, bottom, width, height} = rect;
+
+					const isOffscreen =
+					bottom < 0 ||
+					top > renderer.domElement.clientHeight ||
+					right < 0 ||
+					left > renderer.domElement.clientWidth;
+
+					if (!isOffscreen) {
+						const positiveYUpBottom = renderer.domElement.clientHeight - bottom;
+						renderer.setScissor(left, positiveYUpBottom, width, height);
+						renderer.setViewport(left, positiveYUpBottom, width, height);
+
+						fn(time, rect);
+					}
+				}
+
+				requestAnimationFrame(render);
+			}
+			requestAnimationFrame(render);
+		}
+		window.main = main;
+
+		</script>
+		</html>

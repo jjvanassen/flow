@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<title>Collective Flow Experiment</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<canvas id="c"></canvas>
+	<div class="pages">
+		<div id="page_welcome" class="textwidth hidden">
+			<h1>Welcome</h1>
+			<p>
+				[Welcome message]
+			</p>
+			<p>
+				[Information experimenter]
+			</p>
+			<p>
+				This experiment is for PCs or laptops only.
+			</p>
+			<div class="alignbtn">
+				<button id='goto_consentbtn' class="btn neutral" onclick="javascript:show('page_consent')">Continue</button>
+			</div>
+		</div>
+
+		<div id="page_consent" class="textwidth hidden">
+			<h1>Consent Form</h1>
+			<h2>Participants' rights</h2>
+			<p>
+				<ul class="items">
+					<li>Clear bullet punts with the rights</li>
+				</ul>
+					</p>
+					<h2>Reimbursement / Compensation</h2>
+					<p>
+						[More information]
+					</p>
+					<h2>Confidentiality / Anonymity</h2>
+					<p>
+						[More information]
+					</p>
+					<p>
+						Please only click on&nbsp;<b>'I Consent'</b>&nbsp;if you give your consent, after having read the above information.<br>
+					</p>
+					<div class="alignbtn">
+						<button id='goto_subjectbtn' class="btn positive" onclick="javascript:show('page_subject')">I consent</button>
+						<button id='goto_noconsentbtn' class="btn negative" onclick="javascript:show('page_noconsent')">I do not consent</button>
+					</div>
+				</div>
+
+				<div id="page_noconsent" class="textwidth hidden">
+					<p>
+						Without your consent we cannot continue with this experiment.
+						[More information]<br><br>
+						If you wish to reconsider you can go back to the consent form by pressing <b>'Reconsider'</b>.
+						Otherwise you can close this window.
+					</p>
+					<div class="alignbtn">
+						<button id='goto_consentbtn' class="btn neutral" onclick="javascript:show('page_consent')">Reconsider</button>
+					</div>
+				</div>
+
+				<div id="page_subject" class="textwidth hidden">
+					<h1>Subject information</h1>
+					<form>
+						<h2 style='width: 100%;'>Prolific ID</h2>
+						<input class="formitems" type="text" id="prolificID" name="prolificID"><br>
+						<p></p>
+						<h2 style='width: 100%;'>Age</h2>
+						<input class="formitems" type="number" id="age" name="age" max="117"><br>
+						<p></p>
+						<h2 style='width: 100%;'>Gender</h2>
+						<input class="formitems" type="radio" id="male" name="gender" value="1">
+						<label for="male">Male</label><br>
+						<input class="formitems" type="radio" id="female" name="gender" value="2">
+						<label for="female">Female</label><br>
+						<input class="formitems" type="radio" id="other" name="gender" value="3">
+						<label for="other">Other</label>
+						<p></p>
+						<h2 style='width: 100%;'>Corrected vision</h2>
+						<p style='margin: 0px;width: 100%;'>
+							Reply with yes when you are wearing glasses or contact lenses during the experiment.
+						</p>
+						<input class="formitems" type="radio" id="yes" name="corrvis" value="1">
+						<label for="yes">Yes</label><br>
+						<input class="formitems" type="radio" id="no" name="corrvis" value="0">
+						<label for="no">No</label><br>
+						<p></p>
+					</form>
+					<div class="alignbtn">
+						<button id='goto_instructionsbtn' class="btn neutral" onclick="javascript:subjectValidity();">Continue</button>
+					</div>
+				</div>
+
+				<div id="page_instructions" class="hidden">
+					<h1>Instructions</h1>
+					<p>
+						In this experiment you will be asked to perform a similarity judgement between different simulations.
+					</p>
+
+					<h2>Task: similarity judgement</h2>
+					<img src="instructions.png" />
+					<p>
+						During this task you will see three stimuli.
+						A standard which you will compare with two test stimuli.
+						You need to pick the pair that looks <b>most similar</b>.
+						If it is the left pair (standard + test 1) you press <b>[e]</b>, and for the right pair you press <b>[i]</b>.
+						<br><br>
+						You will need to wait 5 seconds before you can answer as it might take a few seconds for the stimuli to stabilize.
+						<br><br>
+						The experiment will take roughly 20 minutes to complete.
+						<br><br>
+						The simulations run on your system so you might hear some increased fan noise.
+						<br><br>
+						After you press continue a few training trials will start to get acquainted with the interface and task.
+					</p>
+					<div class="alignbtn">
+						<button id='goto_experimentbtn' class="btn neutral" onclick="javascript:main();">Continue</button>
+					</div>
+				</div>
+
+				<div id="page_trainingdone" class="hidden">
+					<div style="display:block;"class="alignbtn instructionblock">
+						You finished the training. When you start the experiment all answers will be recorded.<br><br>
+						Press <b>'SPACE'</b> to start with the main experiment.
+					</div>
+				</div>
+
+				<div id="page_experiment1" class="hidden">
+					<span class="training" id="trainingtag"></span>
+					<span class="trialnum" id="trialprog"></span>
+					<span class="trialnum" id="waitsec"></span>
+					<div class="instructionblock">Which stimulus is more similar to the standard?</div>
+					<div class="stims">
+						<div class="stimblock standard">
+							<div class="stiminstructionblock">Standard</div>
+							<span id="standard" class="stimulus"></span>
+						</div>
+						<div class="stimblock left">
+							<div class="stiminstructionblock">Stimulus 1 [ e ]</div>
+							<span id="test1" class="stimulus"></span>
+						</div>
+						<div class="stimblock right">
+							<div class="stiminstructionblock">Stimulus 2 [ i ]</div>
+							<span id="test2" class="stimulus"></span>
+						</div>
+					</div>
+				</div>
+
+				<div id="page_experimentempty" class="hidden">
+				</div>
+
+				<div id="page_thankyou" class="hidden">
+					<h1>Finished</h1>
+					<p style="text-align: center;">
+						Thank you very much for participating!<br><br>
+						[More information]
+						<br><br>
+						Press the following button to be redirected to Prolific for experiment completion.
+					</p>
+					<div class="alignbtn">
+						<button id='goto_prolificbtn' class="btn neutral">To Prolific</button>
+					</div>
+				</div>
+			</div>
+		</body>
+
+		<script type="module">
+		// Javascript code
+		import * as THREE from '/js/three.module.js';
+		import * as SIM from '/js/simulator.js';
+		import * as FUNC from '/js/functions.js';
+
+		// Variables tracked throughout the script
+		var prolID,age,gender,corrvis,subID,species,trialTime,csvString,filename;
+		// temporary
+		var datPath = "results/";  // folder where experimental data will be saved
+		var d = new Date();
+		var standardActive = true;
+		var testActive = true;
+		var finished = false;
+		var numTrainingTrial = 4;
+		var keyTime;
+		var timePassed = false;
+		var timeToPass = 5;
+		var zor = 1;
+		var fov = 272.5;
+		var err = 5.75;
+
+		// Experiment functions
+		$(document).ready(start);
+
+		function start(){
+			show('page_welcome');
+			//show('page_instructions');
+		}
+
+		function show(element) {
+			// hide all elements
+			$('.show').removeClass('show').addClass('hidden');
+			// switch the css display property of the provided element
+			var ele = $(`#${element}`);
+			ele.removeClass('hidden').addClass('show');
+			resetView()
+		}
+		window.show = show;
+
+		function subjectValidity(){
+			var correct = 0;
+			// check prolificID
+			if (document.getElementById("prolificID").value.length == 0) {
+				//alert("The Prolific ID field is empty.");
+			}else{
+				prolID = document.getElementById("prolificID").value;
+				correct++;
+			}
+			// check age
+			if (document.getElementById("age").validity.rangeOverflow) {
+				//alert("The oldest person currently alive is 117.");
+			}else if (!document.getElementById("age").value){
+				//alert("The value at age is missing or not a number.");
+			} else {
+				age = document.getElementById("age").value;
+				correct++;
+			}
+			// check gender
+			var radios = document.getElementsByName('gender');
+			for (var i = 0, length = radios.length; i < length; i++) {
+				if (radios[i].checked) {
+					gender = radios[i].value;
+					correct++;
+					break;
+				}
+			}
+			// check corrected vision
+			var radios = document.getElementsByName('corrvis');
+			for (var i = 0, length = radios.length; i < length; i++) {
+				if (radios[i].checked) {
+					corrvis = radios[i].value;
+					correct++;
+					break;
+				}
+			}
+			// check if all answers are given
+			if (correct == 4){
+				show('page_instructions');
+			}else{
+				alert("The form was incorrect or incomplete, please check your answers.");
+			}
+		}
+		window.subjectValidity = subjectValidity;
+
+		function resetView() {
+			//page automatically scrolls to top.
+			document.body.scrollTop = 0;
+			document.documentElement.scrollTop = 0;
+		}
+
+		function resetTime() {
+			trialTime = Date.now() // start a timer
+		}
+
+		async function sleep(ms) {
+			return await new Promise(resolve => setTimeout(resolve, ms));
+		}
+
+		// Experiment functions
+		function initStimList() {
+			var numDim = 3;
+			var numVar = 5;
+			var numStims = numVar ** numDim;
+			var numTrainingTrial = 4;
+			var numTrials = 100;
+
+			var zone = [0.,3.75,7.5,11.25,15.];
+			var tr = [10,20.6,42.43,87.39,180];
+
+			// triads trials
+			var fullList = FUNC.nchoosek3(FUNC.nchoosek(numStims,3)); // all combinations
+			var stimIndex = FUNC.genTriadsID(numVar); // lookup table
+			console.info(stimIndex)
+			var swapID = FUNC.randb(numTrials); // swap s1 and s3
+
+			var stimS1 = [];
+			var stimS2 = [];
+			var stimS3 = [];
+			var trialIDs = [];
+
+			// loop to make lists
+			for(var i = 0; i < numTrials; i ++ ){
+				var trialID = fullList[Math.floor(Math.random()*fullList.length)];
+				trialIDs.push(trialID);
+				if(swapID[i]){
+					stimS3.push([zone[stimIndex[trialID[0]-1][0]],zone[stimIndex[trialID[0]-1][1]],tr[stimIndex[trialID[0]-1][2]]]);
+					stimS2.push([zone[stimIndex[trialID[1]-1][0]],zone[stimIndex[trialID[1]-1][1]],tr[stimIndex[trialID[1]-1][2]]]);
+					stimS1.push([zone[stimIndex[trialID[2]-1][0]],zone[stimIndex[trialID[2]-1][1]],tr[stimIndex[trialID[2]-1][2]]]);
+				}else{
+					stimS1.push([zone[stimIndex[trialID[0]-1][0]],zone[stimIndex[trialID[0]-1][1]],tr[stimIndex[trialID[0]-1][2]]]);
+					stimS2.push([zone[stimIndex[trialID[1]-1][0]],zone[stimIndex[trialID[1]-1][1]],tr[stimIndex[trialID[1]-1][2]]]);
+					stimS3.push([zone[stimIndex[trialID[2]-1][0]],zone[stimIndex[trialID[2]-1][1]],tr[stimIndex[trialID[2]-1][2]]]);
+				}
+			}
+
+			// specify training trials
+			trialIDs.unshift([0,0,0],[0,0,0],[0,0,0],[0,0,0]);
+			stimS1.unshift([3.75,7.5,10],[11.25,15,87.39],[15.,3.75,87.39],[3.75,11.25,42.43]);
+			stimS2.unshift([3.75,7.5,87.39],[3.75,15,42.43],[11.25,3.75,87.39],[3.75,0,42.43]);
+			stimS3.unshift([3.75,7.5,180],[11.25,11.25,87.39],[0,3.75,87.39],[3.75,7.5,87.39]);
+			swapID.unshift(2,2,2,2)
+
+			// specify attention trials (could be done better)
+			//stimS1.splice(2, 0, [20,20,360]);
+			stimS1.splice(19, 0, [20,20,360]);
+			stimS1.splice(52, 0, [20,20,360]);
+			stimS1.splice(85, 0, [20,20,360]);
+
+			//stimS2.splice(2, 0, [20,20,360]);
+			stimS2.splice(19, 0, [20,20,360]);
+			stimS2.splice(52, 0, [20,20,360]);
+			stimS2.splice(85, 0, [20,20,360]);
+
+			//stimS3.splice(2, 0, [0,0,0]);
+			stimS3.splice(19, 0, [20,20,0]);
+			stimS3.splice(52, 0, [20,20,0]);
+			stimS3.splice(85, 0, [20,20,0]);
+
+			//trialIDs.splice(2, 0, [0,0,0]);
+			trialIDs.splice(19, 0, [0,0,0]);
+			trialIDs.splice(52, 0, [0,0,0]);
+			trialIDs.splice(85, 0, [0,0,0]);
+
+			//swapID.splice(2, 0, 3);
+			swapID.splice(19, 0, 3);
+			swapID.splice(52, 0, 3);
+			swapID.splice(85, 0, 3);
+
+			return {
+				stimS1,
+				stimS2,
+				stimS3,
+				trialIDs,
+				swapID
+			};
+		}
+
+
+		// active not working...
+		function trialTransition(){
+			standardActive = false;
+			testActive = false;
+			show('page_experimentempty');
+			sleep(500).then(() => {
+				show('page_experiment1');
+				standardActive = true;
+				testActive = true;
+				resetTime();
+				keyTime = Date.now()
+				timePassed = false;
+			});
+		}
+
+		function getNumFile(){
+			var numFiles;
+			$.ajax({
+				type: 'POST',
+				url: "filecount.php",
+				async: false,
+				dataType : 'json',
+				success : function (result) {
+					numFiles = result;
+				}
+			});
+			return numFiles;
+		}
+
+
+		function main() {
+			function addScene(elem, fn) {
+				sceneElements.push({elem, fn});
+			}
+
+			// Make stimList
+			var training = true;
+			var stimList = initStimList();
+			var trialID = 1;
+			var numTrials = stimList.stimS1.length;
+			// Trial data
+			var rowArray = {
+				prolID:prolID,
+				subID:subID,
+				age:age,
+				gender:gender,
+				corrvis:corrvis
+			};
+
+			// visual first trials
+			document.body.style.backgroundColor = "#606060";
+			show('page_experiment1');
+			standardActive = true;
+			testActive = true;
+
+			// start timer
+			resetTime();
+
+			// Update trial num
+			document.getElementById("trainingtag").innerHTML = "Training";
+			document.getElementById("trialprog").innerHTML = "";
+
+			// Canvas/renderer
+			const canvas = document.querySelector('#c');
+			var renderer = new THREE.WebGLRenderer({canvas, alpha: true});
+			const sceneElements = [];
+			const debug = true;
+
+			// Standard
+			{
+				const elem = document.querySelector('#standard');
+				// Initialization (run once)
+				console.info(trialID);
+
+				let [scene, camera, agentDat, sceneProp] = SIM.simInit(zor,stimList.stimS2[trialID-1][0],stimList.stimS2[trialID-1][1],fov,stimList.stimS2[trialID-1][2],err);
+				keyTime = Date.now()
+
+				// main experiment organiser
+				document.addEventListener('keyup', (e) => {
+					if (!finished){
+
+						//either key update rowArray
+						rowArray["trialID"] = trialID-numTrainingTrial;
+						rowArray["S1ID"] = stimList.trialIDs[trialID-1][0];
+						rowArray["S1ZoO"] = stimList.stimS1[trialID-1][0];
+						rowArray["S1ZoA"] = stimList.stimS1[trialID-1][1];
+						rowArray["S1TR"] = stimList.stimS1[trialID-1][2];
+						rowArray["S2ID"] = stimList.trialIDs[trialID-1][1];
+						rowArray["S2ZoO"] = stimList.stimS2[trialID-1][0];
+						rowArray["S2ZoA"] = stimList.stimS2[trialID-1][1];
+						rowArray["S2TR"] = stimList.stimS2[trialID-1][2];
+						rowArray["S3ID"] = stimList.trialIDs[trialID-1][2];
+						rowArray["S3ZoO"] = stimList.stimS3[trialID-1][0];
+						rowArray["S3ZoA"] = stimList.stimS3[trialID-1][1];
+						rowArray["S3TR"] = stimList.stimS3[trialID-1][2];
+						rowArray["trialType"] = stimList.swapID[trialID-1];
+						rowArray["time"] = (Date.now() - trialTime)/1000;
+
+						if(trialID<=numTrials){
+							//Experiment 1 code
+							if (e.code === "KeyE" && timePassed){
+								if (training){
+									if(trialID == numTrainingTrial){
+										standardActive = false;
+										testActive = false;
+										show('page_trainingdone');
+										document.getElementById("trainingtag").innerHTML = "";
+										document.getElementById("trialprog").innerHTML = "" + (trialID-numTrainingTrial) + "/" + (numTrials-numTrainingTrial);
+									}else {
+										trialID++
+										// experiment 1 or 2 and transition
+										trialTransition();
+										console.info(trialID);
+										[ , , agentDat, sceneProp] = SIM.simInit(zor,stimList.stimS2[trialID-1][0],stimList.stimS2[trialID-1][1],fov,stimList.stimS2[trialID-1][2],err);
+									}
+								}else{
+									rowArray["response"] = 0;
+
+									// save response
+									if (trialID == 1+numTrainingTrial){
+										// save csv with header for 1st trial
+										csvString = FUNC.obj2csv(rowArray,true)
+									}else{
+										csvString = FUNC.obj2csv(rowArray,false)
+									}
+									// write the actual file to the server
+									FUNC.write2file(csvString,datPath+filename);
+
+									// increment trial
+									// stop loading after last trial
+									if(trialID<numTrials){
+										trialID++
+
+										// init next trial
+										document.body.style.backgroundColor = "#606060";
+
+										// experiment 1 or 2 and transition
+										trialTransition();
+										console.info(trialID);
+										[ , , agentDat, sceneProp] = SIM.simInit(zor,stimList.stimS2[trialID-1][0],stimList.stimS2[trialID-1][1],fov,stimList.stimS2[trialID-1][2],err);
+										document.getElementById("trialprog").innerHTML = "" + (trialID-numTrainingTrial) + "/" + (numTrials-numTrainingTrial);
+									}else{
+										// experiment finished
+										//trialID++
+										show('page_thankyou');
+										finished = true;
+										standardActive = false;
+										testActive = false;
+										document.body.style.backgroundColor = "#FFFFFF";
+									}
+								}
+							} else if (e.code === "KeyI" && timePassed){
+								if (training){
+									if(trialID == numTrainingTrial){
+										standardActive = false;
+										testActive = false;
+										show('page_trainingdone');
+										document.getElementById("trainingtag").innerHTML = "";
+										document.getElementById("trialprog").innerHTML = "" + (trialID-numTrainingTrial) + "/" + (numTrials-numTrainingTrial);
+									}else {
+										trialID++
+										// experiment 1 or 2 and transition
+										trialTransition();
+										console.info(trialID);
+										[ , , agentDat, sceneProp] = SIM.simInit(zor,stimList.stimS2[trialID-1][0],stimList.stimS2[trialID-1][1],fov,stimList.stimS2[trialID-1][2],err);
+									}
+								}else{
+									rowArray["response"] = 1;
+									// save response
+									if (trialID == 1+numTrainingTrial){
+										csvString = FUNC.obj2csv(rowArray,true)
+									}else{
+										csvString = FUNC.obj2csv(rowArray,false)
+									}
+									FUNC.write2file(csvString,datPath+filename);
+
+									if(trialID<numTrials){
+										trialID++
+
+										trialTransition();
+										console.info(trialID);
+										[ , , agentDat, sceneProp] = SIM.simInit(zor,stimList.stimS2[trialID-1][0],stimList.stimS2[trialID-1][1],fov,stimList.stimS2[trialID-1][2],err);
+										document.getElementById("trialprog").innerHTML = "" + (trialID-numTrainingTrial) + "/" + (numTrials-numTrainingTrial);
+									}else{
+										// experiment finished
+										show('page_thankyou');
+										finished = true;
+										standardActive = false;
+										testActive = false;
+										document.body.style.backgroundColor = "#FFFFFF";
+									}
+								}
+							} else if(e.code === "Space"){
+								if (training && trialID==4){
+									subID = 1;//getNumFile()+1;
+									filename = 'S'+subID+'_'+d.getFullYear()+('00'+(d.getMonth()+1)).slice(-2)+('00'+d.getDate()).slice(-2)+'.csv';
+									FUNC.write2file('',datPath+filename)
+									rowArray.subID = subID;
+									show('page_experiment1');
+									standardActive = true;
+									testActive = true;
+									training=false;
+									trialID++;
+									[ , , agentDat, sceneProp] = SIM.simInit(zor,stimList.stimS2[trialID-1][0],stimList.stimS2[trialID-1][1],fov,stimList.stimS2[trialID-1][2],err);
+									document.getElementById("trialprog").innerHTML = "" + (trialID-numTrainingTrial) + "/" + (numTrials-numTrainingTrial);
+								}
+							}
+						}
+					}
+				});
+
+				// This is the update code
+				addScene(elem, (time, rect) => {
+					if(!timePassed){
+						document.getElementById("waitsec").innerHTML = "You can answer in "+Math.ceil(timeToPass-((Date.now() - keyTime)/1000))+" seconds";
+						if ((Date.now() - keyTime)/1000 >= timeToPass){
+							timePassed = true;
+						}
+					}else{
+						document.getElementById("waitsec").innerHTML = "You can answer";
+					}
+
+					// run simulation if active
+					if(standardActive){
+						agentDat = SIM.simUpdate(agentDat,sceneProp);
+						// update lines
+						agentDat = SIM.lineUpdate(scene,agentDat,sceneProp,debug);
+						// run renderer
+						renderer.render(scene, camera);
+					}
+				});
+
+			}
+			{
+				// Stimulus 1
+				const elem = document.querySelector('#test1');
+				// Initialization (run once)
+				let [scene, camera, agentDat, sceneProp] = SIM.simInit(zor,stimList.stimS1[trialID-1][0],stimList.stimS1[trialID-1][1],fov,stimList.stimS1[trialID-1][2],err);
+				// update on key press
+				document.addEventListener('keyup', (e) => {
+					if(trialID<=numTrials){
+						if (e.code === "KeyE" && timePassed){
+							[ , , agentDat, sceneProp] = SIM.simInit(zor,stimList.stimS1[trialID-1][0],stimList.stimS1[trialID-1][1],fov,stimList.stimS1[trialID-1][2],err);
+						} else if (e.code === "KeyI" && timePassed){
+							[ , , agentDat, sceneProp] = SIM.simInit(zor,stimList.stimS1[trialID-1][0],stimList.stimS1[trialID-1][1],fov,stimList.stimS1[trialID-1][2],err);
+						}
+					}
+				});
+				// This is the update code
+				addScene(elem, (time, rect) => {
+					if (testActive){
+						// run simulation
+						agentDat = SIM.simUpdate(agentDat,sceneProp);
+						// update lines
+						agentDat = SIM.lineUpdate(scene,agentDat,sceneProp,debug);
+						renderer.render(scene, camera);
+					}
+				});
+			}
+			{
+				// Stimulus 2
+				const elem = document.querySelector('#test2');
+				// Initialization (run once)
+				let [scene, camera, agentDat, sceneProp] = SIM.simInit(zor,stimList.stimS3[trialID-1][0],stimList.stimS3[trialID-1][1],fov,stimList.stimS3[trialID-1][2],err);
+				// update on key press
+				document.addEventListener('keyup', (e) => {
+					if(trialID<=numTrials){
+						if (e.code === "KeyE" && timePassed){
+							[ , , agentDat, sceneProp] = SIM.simInit(zor,stimList.stimS3[trialID-1][0],stimList.stimS3[trialID-1][1],fov,stimList.stimS3[trialID-1][2],err);
+						} else if (e.code === "KeyI" && timePassed){
+							[ , , agentDat, sceneProp] = SIM.simInit(zor,stimList.stimS3[trialID-1][0],stimList.stimS3[trialID-1][1],fov,stimList.stimS3[trialID-1][2],err);
+						}
+					}
+				});
+				// This is the update code
+				addScene(elem, (time, rect) => {
+					if (testActive){
+						// run simulation
+						agentDat = SIM.simUpdate(agentDat,sceneProp);
+						// update lines
+						agentDat = SIM.lineUpdate(scene,agentDat,sceneProp,debug);
+						renderer.render(scene, camera);
+					}
+				});
+			}
+
+			function resizeRendererToDisplaySize(renderer) {
+				const canvas = renderer.domElement;
+				const width = canvas.clientWidth;
+				const height = canvas.clientHeight;
+				const needResize = canvas.width !== width || canvas.height !== height;
+				if (needResize) {
+					renderer.setSize(width, height, false);
+				}
+				return needResize;
+			}
+
+			const clearColor = new THREE.Color('#000');
+
+			function render(time) {
+				time *= 0.001;
+				resizeRendererToDisplaySize(renderer);
+
+				renderer.setScissorTest(false);
+				renderer.setClearColor(clearColor, 0);
+				renderer.clear(true, true);
+				renderer.setScissorTest(true);
+
+				const transform = `translateY(${window.scrollY}px)`;
+				renderer.domElement.style.transform = transform;
+
+				for (const {elem, fn} of sceneElements) {
+					// get the viewport relative position of this element
+					const rect = elem.getBoundingClientRect();
+					const {left, right, top, bottom, width, height} = rect;
+
+					const isOffscreen =
+					bottom < 0 ||
+					top > renderer.domElement.clientHeight ||
+					right < 0 ||
+					left > renderer.domElement.clientWidth;
+
+					if (!isOffscreen) {
+						const positiveYUpBottom = renderer.domElement.clientHeight - bottom;
+						renderer.setScissor(left, positiveYUpBottom, width, height);
+						renderer.setViewport(left, positiveYUpBottom, width, height);
+
+						fn(time, rect);
+					}
+				}
+
+				requestAnimationFrame(render);
+			}
+			requestAnimationFrame(render);
+		}
+		window.main = main;
+
+
+
+		</script>
+		</html>
